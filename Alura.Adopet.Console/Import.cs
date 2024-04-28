@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Http.Headers;
+﻿using System.Net.Http.Headers;
 using System.Net.Http.Json;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Alura.Adopet.Console
 {
@@ -18,25 +13,12 @@ namespace Alura.Adopet.Console
         public async Task ImportacaoArquivoPetAsync(string caminhoDoArquivoDeImportacao)
         {
            
-            List<Pet> listaDePet = new List<Pet>();
-                using (StreamReader sr = new StreamReader(caminhoDoArquivoDeImportacao))
+           
+            var leitor = new LeitorDeArquivo();
+            List<Pet> listaDePet = leitor.RealizaLeitura(caminhoDoArquivoDeImportacao);
+            foreach (var pet in listaDePet)
                 {
-                    while (!sr.EndOfStream)
-                    {
-                        // separa linha usando ponto e vírgula
-                        string[] propriedades = sr.ReadLine().Split(';');
-                        // cria objeto Pet a partir da separação
-                        Pet pet = new Pet(Guid.Parse(propriedades[0]),
-                          propriedades[1],
-                          TipoPet.Cachorro
-                         );
-
-                       System.Console.WriteLine(pet);
-                        listaDePet.Add(pet);
-                    }
-                }
-                foreach (var pet in listaDePet)
-                {
+                    System.Console.WriteLine(pet);
                     try
                     {
                         var resposta = await CreatePetAsync(pet);
